@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="12" height="12" tilewidth="20" tileheight="20" nextobjectid="13">
+ <tileset firstgid="1" name="tiledmap" tilewidth="20" tileheight="20" tilecount="100" columns="10">
+  <image source="H:/Profile/Desktop/tiledmap.png" width="200" height="200"/>
+ </tileset>
+ <tileset firstgid="101" name="tiledmap copy" tilewidth="20" tileheight="20" tilecount="100" columns="10">
+  <image source="H:/Profile/Desktop/tiledmap copy.png" width="200" height="200"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="12" height="12">
+  <data encoding="csv">
+112,112,112,112,112,112,111,111,111,111,111,111,
+112,114,0,0,0,0,0,0,0,0,113,111,
+112,0,0,0,0,0,0,0,0,0,0,111,
+112,0,0,0,0,0,0,0,0,0,0,111,
+112,0,0,0,0,0,0,0,0,0,0,111,
+112,0,0,0,0,0,0,0,0,0,0,111,
+102,0,0,0,0,0,0,0,0,0,0,1,
+102,0,0,0,0,0,0,0,0,0,0,1,
+102,0,0,0,0,0,0,0,0,0,0,1,
+102,0,0,0,0,0,0,0,0,0,0,1,
+102,104,0,0,0,0,0,0,0,0,103,1,
+102,102,102,102,102,102,1,1,1,1,1,1
+</data>
+ </layer>
+ <objectgroup name="collision-layer">
+  <object id="11" x="200" y="20">
+   <polyline points="0,0 20,20 20,180 0,200 -160,200 -180,180 -180,20 -160,0 0,0"/>
+  </object>
+ </objectgroup>
+</map>
