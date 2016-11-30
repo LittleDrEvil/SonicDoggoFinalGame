@@ -1,6 +1,7 @@
 package states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import managers.GameStateManager;
@@ -16,8 +17,8 @@ public class SplashState extends GameState {
     }
 
     public void update(float delta) {
-        acc += delta;
-        if (acc >= 0) {
+        
+        if (Gdx.input.isButtonPressed(Input.Keys.ENTER)) {
             gsm.setState(GameStateManager.State.PLAY);
         }
     }

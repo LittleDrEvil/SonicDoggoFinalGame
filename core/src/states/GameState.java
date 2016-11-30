@@ -1,6 +1,6 @@
 package states;
 
-import box2d.Box2DMain;
+import newpackage.Box2DMain;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

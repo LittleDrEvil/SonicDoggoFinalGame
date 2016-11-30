@@ -1,6 +1,6 @@
 package managers;
 
-import box2d.Box2DMain;
+import newpackage.Box2DMain;
 import java.util.Stack;
 import states.GameState;
 import states.PlayState;
