@@ -21,15 +21,17 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import entities.BoxBody;
+import entities.PlayerBody;
 import java.util.HashSet;
-import java.util.Set;
 import managers.GameStateManager;
+import newpackage.Box2DMain;
 import static utils.Constants.PPM;
 import utils.TiledObjectUtil;
 
 public class PlayState extends GameState {
-
-    private BoxBody bbPlayer, bbObj1, bbObj2, arBodies[];
+    private final float fSCALE = 2f;
+    private PlayerBody bbPlayer;
+    private BoxBody  bbObj1, bbObj2, arBodies[];
     private Contact contact;
     private OrthogonalTiledMapRenderer tmr;
     private TiledMap map;
@@ -39,29 +41,29 @@ public class PlayState extends GameState {
     private Boolean isLeft = false;
     private Texture texture;
     private int nJump = 0;
+    private int height = Box2DMain.V_HEIGHT, width = Box2DMain.V_WIDTH;
     
     
     private int nArrayMax = 10;
     public PlayState(GameStateManager gsm){
         super(gsm);
-        arBodies = new BoxBody[10];
-        world = new World(new Vector2(0,-7f), false);
+        world = new World(new Vector2(0,0f), false);
         b2dr = new Box2DDebugRenderer();
-        bbPlayer = new BoxBody(world, "PLAYER", 0, 0, 20);
+        bbPlayer = new PlayerBody(world, "PLAYER", 0, 150, 20);
         bbObj1 = new BoxBody(world, "OBJ1", 20, 20, 10);
         bbObj2 = new BoxBody(world, "OBJ2", -20, -20, 10);
-        for (int i = 0; i < 10; i++) {
-            arBodies[i] = new BoxBody(world, ("Obj" + i),i*10, 20, 10);
-        }
-        
+        map = new TmxMapLoader().load("TiledMap.tmx");
+        tmr = new OrthogonalTiledMapRenderer(map);
+        TiledObjectUtil.parseTiledObjectLayer(world, map.getLayers().get("collision").getObjects());
     }
     
     @Override
     public void update(float delta) {
         world.step(1/60f, 6, 2);
         inputUpdate(delta);
-        
         cameraUpdate();
+        
+        tmr.setView(camera);
     }
 
     @Override
@@ -70,7 +72,12 @@ public class PlayState extends GameState {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         batch.end();
+        System.out.println(tmr.getUnitScale());
+        tmr.render();
         b2dr.render(world, camera.combined.scl(PPM));
+    }
+    public void resize(int width, int height){
+        camera.setToOrtho(false, width/4, height/4);
     }
 
     @Override
@@ -86,10 +93,10 @@ public class PlayState extends GameState {
         // a + (b - a) * lerp
         // b = target 
         // a = current camera position
-//        position.x = camera.position.x + (body1.getPosition().x * PPM - camera.position.x) * 0.1f;
-//        position.y = camera.position.y + (body1.getPosition().y * PPM - camera.position.y) * 0.1f;
-        position.x = 0;
-        position.y = 0;
+        position.x = camera.position.x + (bbPlayer.body.getPosition().x * PPM - camera.position.x) * 0.5f;
+        position.y = camera.position.y + (bbPlayer.body.getPosition().y * PPM - camera.position.y) * 0.5f;
+//        position.x = 0;
+//        position.y = 0;
         camera.position.set(position);
         camera.update();
     }
@@ -97,20 +104,17 @@ public class PlayState extends GameState {
         int horizontalForce = 0, x=0 , y=0;
        
         if(Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-            x--;
+            x-=5;
         }
         if(Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-            x++;
+            x+=5;
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)){
-            y++;
+            y+=5;
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-            y--;
+            y-=5;
         }
-        if(x!= 0 )
-            bbPlayer.body.setLinearVelocity( x * 350 * delta, bbPlayer.body.getLinearVelocity().y);
-        if(y!= 0 )
-            bbPlayer.body.setLinearVelocity(bbPlayer.body.getLinearVelocity().x, y*350*delta);
+            bbPlayer.body.setLinearVelocity(x, y);
     }
 }

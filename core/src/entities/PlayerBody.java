@@ -1,3 +1,7 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package entities;
 
 import com.badlogic.gdx.physics.box2d.Body;
@@ -7,20 +11,15 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import utils.Constants;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  *
  * @author karnh7634
  */
-public class BoxBody {
+public class PlayerBody {
     public Body body;
     public String id;
     public int nWidth;
-    public BoxBody(World world, String id, float x, float y, int nWidth){
+    public PlayerBody(World world, String id, float x, float y, int nWidth){
         this.id = id;
         this.nWidth = nWidth;
         createBoxBody(world, x , y);
@@ -48,4 +47,5 @@ public class BoxBody {
     public void hit(){
         System.out.println(id + " : hiteroni");
     }
+    
 }
