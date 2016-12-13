@@ -27,7 +27,7 @@ public class PlayerBody {
     
     private void createBoxBody(World world, float x, float y){
         BodyDef bdef = new BodyDef();
-        bdef.fixedRotation = true;
+        bdef.fixedRotation = false;
         bdef.type = BodyDef.BodyType.DynamicBody;
         bdef.position.set(x/Constants.PPM, y/Constants.PPM);
         
@@ -37,8 +37,10 @@ public class PlayerBody {
         FixtureDef fdef = new FixtureDef();
         fdef.shape = shape;
         fdef.density = 1f;
+        fdef.friction = 0f;
         
         this.body = world.createBody(bdef);
+        this.body.setAngularDamping(3);
         this.body.createFixture(fdef).setUserData(this);
         
     }
