@@ -38,6 +38,7 @@ public class BoxBody {
         FixtureDef fdef = new FixtureDef();
         fdef.shape = shape;
         fdef.density = 1f;
+        fdef.friction = 100f;
         
         this.body = world.createBody(bdef);
         this.body.createFixture(fdef).setUserData(this);

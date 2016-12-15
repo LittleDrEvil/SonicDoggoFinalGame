@@ -22,6 +22,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import entities.BoxBody;
 import entities.PlayerBody;
+import handlers.ContListener;
 import java.util.HashSet;
 import managers.GameStateManager;
 import newpackage.Box2DMain;
@@ -32,7 +33,6 @@ public class PlayState extends GameState {
     private final float fSCALE = 2f;
     private PlayerBody bbPlayer;
     private BoxBody  bbObj1, bbObj2, arBodies[];
-    private Contact contact;
     private OrthogonalTiledMapRenderer tmr;
     private TiledMap map;
     private float fSpeed=0, fGravity=-0.1f;
@@ -47,11 +47,12 @@ public class PlayState extends GameState {
     private int nArrayMax = 10;
     public PlayState(GameStateManager gsm){
         super(gsm);
-        world = new World(new Vector2(0,-9.8f), false);
+        this.world = new World(new Vector2(0,-9.8f), false);
+        this.world.setContactListener(new ContListener());
         b2dr = new Box2DDebugRenderer();
-        bbPlayer = new PlayerBody(world, "PLAYER", 0, 300, 20);
-        bbObj1 = new BoxBody(world, "OBJ1", 20, 200, 10);
-        bbObj2 = new BoxBody(world, "OBJ2", -20, 200, 10);
+        bbPlayer = new PlayerBody(world, "PLAYER", 0, 400, 20);
+        bbObj1 = new BoxBody(world, "OBJ1", 20, 400, 10);
+        bbObj2 = new BoxBody(world, "OBJ2", 30, 400, 10);
         map = new TmxMapLoader().load("TiledMap.tmx");
         tmr = new OrthogonalTiledMapRenderer(map);
         TiledObjectUtil.parseTiledObjectLayer(world, map.getLayers().get("collision").getObjects());
@@ -60,9 +61,9 @@ public class PlayState extends GameState {
     @Override
     public void update(float delta) {
         world.step(1/60f, 6, 2);
-        inputUpdate(delta);
+//        inputUpdate(delta);
         cameraUpdate();
-        
+        bbPlayer.inputUpdate(delta, bbPlayer.body.getPosition().y);
         tmr.setView(camera);
     }
 
@@ -72,7 +73,8 @@ public class PlayState extends GameState {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         tmr.render();
         b2dr.render(world, camera.combined.scl(PPM));
-        System.out.println(bbPlayer.body.getPosition().x*PPM);
+//        System.out.println(bbPlayer.body.getPosition().x*PPM);
+        
     }
     public void resize(int width, int height){
         camera.setToOrtho(false, width/4, height/4);
@@ -100,30 +102,5 @@ public class PlayState extends GameState {
         camera.position.set(position);
         camera.update();
     }
-    public void inputUpdate(float delta){
-        float horizontalForce = 0, x=0 , y=0;
-       fSpeed += fGravity;
-       y = bbPlayer.body.getPosition().y;
-        if(Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-            bbPlayer.body.applyForceToCenter(-100, 0, false);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-            
-            bbPlayer.body.applyForceToCenter(100, 0, false);
-        }
-//        if(bbPlayer.body.getLinearVelocity().y == fSpeed)
-        if(Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)){
-            fSpeed = 5;
-        }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-            bbPlayer.body.applyForceToCenter(0,-100, false);
-        }
-        bbPlayer.body.setLinearVelocity(x,fSpeed);
-//        System.out.println(bbPlayer.body.getLinearVelocity().y + " " + fSpeed);
-        
-        if(bbPlayer.body.getPosition().y == y){
-//            fSpeed = 0;
-        }
-            
-    }
+
 }
