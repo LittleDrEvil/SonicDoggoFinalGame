@@ -22,7 +22,7 @@ import utils.Constants;
 public class PlayerBody {
     public Body body;
     public String id;
-    public int nWidth;
+    public int nWidth, nJump, nDoubleJump, nAirJump;
     public float fSpeed, fGravity  = -0.1f;
     public PlayerBody(World world, String id, float x, float y, int nWidth){
         this.id = id;
@@ -65,13 +65,23 @@ public class PlayerBody {
         if(Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
             horizontalForce++;
         }
-//        if(bbPlayer.body.getLinearVelocity().y == fSpeed)
-        if(Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)){
-            this.body.applyForceToCenter(0,100,true);
+        
+        if(this.body.getLinearVelocity().y == 0) {  nJump = 0; nDoubleJump = 0;}
+        
+        if(Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)){
+            if(nJump<3){
+            this.body.applyForceToCenter(0,40,true);
+            nJump++;
+            } else if(nDoubleJump < 1){
+                this.body.applyForceToCenter(0,60,true);
+                nDoubleJump++; 
+            }
         }
+        
         if(Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
             this.body.applyForceToCenter(0,-100,true);
         }
-        this.body.setLinearVelocity(horizontalForce*5, this.body.getLinearVelocity().y);            
+        this.body.setLinearVelocity(horizontalForce*5, this.body.getLinearVelocity().y);  
+        System.out.println(this.body.getLinearVelocity().y + " " + nJump + " " + nDoubleJump);
     }
 }
