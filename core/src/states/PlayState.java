@@ -50,20 +50,21 @@ public class PlayState extends GameState {
         this.world = new World(new Vector2(0,-9.8f), false);
         this.world.setContactListener(new ContListener());
         b2dr = new Box2DDebugRenderer();
-        bbPlayer = new PlayerBody(world, "PLAYER", 0, 400, 20);
+        bbPlayer = new PlayerBody(world, "PLAYER", 10, 400, 20);
         bbObj1 = new BoxBody(world, "OBJ1", 20, 400, 10);
         bbObj2 = new BoxBody(world, "OBJ2", 30, 400, 10);
+        texture = new Texture("red.png");
         map = new TmxMapLoader().load("TiledMap.tmx");
         tmr = new OrthogonalTiledMapRenderer(map);
         TiledObjectUtil.parseTiledObjectLayer(world, map.getLayers().get("collision").getObjects());
+        resize(width,height);
     }
     
     @Override
     public void update(float delta) {
         world.step(1/60f, 6, 2);
-//        inputUpdate(delta);
         cameraUpdate();
-        bbPlayer.inputUpdate(delta, bbPlayer.body.getPosition().y);
+        bbPlayer.inputUpdate(delta);
         tmr.setView(camera);
     }
 
@@ -73,11 +74,16 @@ public class PlayState extends GameState {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         tmr.render();
         b2dr.render(world, camera.combined.scl(PPM));
-//        System.out.println(bbPlayer.body.getPosition().x*PPM);
+        System.out.println(bbPlayer.body.getPosition().x * PPM + " " 
+                + bbPlayer.body.getPosition().y * PPM);
+        
+        batch.begin();
+        batch.draw(texture, bbPlayer.body.getPosition().x *PPM - 10, bbPlayer.body.getPosition().y*PPM - 10, 20, 20);
+        batch.end();
         
     }
     public void resize(int width, int height){
-        camera.setToOrtho(false, width/4, height/4);
+        camera.setToOrtho(false, width/2f, height/2);
     }
 
     @Override
@@ -99,8 +105,10 @@ public class PlayState extends GameState {
         position.y = camera.position.y + (bbPlayer.body.getPosition().y * PPM - camera.position.y) * 0.5f;
 //        position.x = 0;
 //        position.y = 0;
+        
         camera.position.set(position);
         camera.update();
+        batch.setProjectionMatrix(camera.combined);
     }
 
 }

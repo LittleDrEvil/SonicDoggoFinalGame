@@ -6,6 +6,7 @@ package entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -56,12 +57,13 @@ public class PlayerBody {
         System.out.println(id + " : hiteroni");
     }
     
-    public void inputUpdate(float delta, float fDy){
+    public void inputUpdate(float delta){
         float horizontalForce = 0, x=0 , y=0;
         fSpeed += fGravity;
         if(Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)){
             horizontalForce--;
         }
+        
         if(Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
             horizontalForce++;
         }
@@ -70,18 +72,25 @@ public class PlayerBody {
         
         if(Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)){
             if(nJump<3){
-            this.body.applyForceToCenter(0,40,true);
-            nJump++;
-            } else if(nDoubleJump < 1){
-                this.body.applyForceToCenter(0,60,true);
-                nDoubleJump++; 
+                this.body.applyForceToCenter(0,40,true);
+                nJump++;
+            }
+        } else {
+            if(this.body.getLinearVelocity().y>0){
+                if(nDoubleJump==0){
+                    System.out.println("yeah");
+                    nJump = 0;
+                    nDoubleJump++;
+                }
             }
         }
-        
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+            this.body.applyForceToCenter(0,40,true);
+        }
         if(Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
             this.body.applyForceToCenter(0,-100,true);
         }
         this.body.setLinearVelocity(horizontalForce*5, this.body.getLinearVelocity().y);  
-        System.out.println(this.body.getLinearVelocity().y + " " + nJump + " " + nDoubleJump);
+//        System.out.println(this.body.getLinearVelocity().y + " " + nJump + " " + nDoubleJump);
     }
 }
