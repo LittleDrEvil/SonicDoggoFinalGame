@@ -7,10 +7,12 @@ package utils;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -20,7 +22,8 @@ import com.badlogic.gdx.physics.box2d.World;
  */
 public class TiledObjectUtil {
     
-    public static void parseTiledObjectLayer(World world, MapObjects objects){
+    public static void parseTiledObjectLayer(World world, TiledMap map){
+        MapObjects objects =  map.getLayers().get("map").getObjects();
         for(MapObject object : objects){
             Shape shape;
             if(object instanceof PolylineMapObject){
@@ -30,9 +33,13 @@ public class TiledObjectUtil {
             }
             Body body;
             BodyDef bdef = new BodyDef();
+            FixtureDef fdef = new FixtureDef();
             bdef.type = BodyDef.BodyType.StaticBody;
             body = world.createBody(bdef);
-            body.createFixture(shape, 1.0f);
+            fdef.shape = shape;
+            fdef.filter.categoryBits = utils.Constants.Bit_Map;
+            fdef.filter.maskBits = utils.Constants.Bit_Enemy|utils.Constants.Bit_Player;
+            body.createFixture(fdef);
             shape.dispose();
         }
     }

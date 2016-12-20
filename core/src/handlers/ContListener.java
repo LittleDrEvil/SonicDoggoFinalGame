@@ -9,13 +9,8 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import entities.BoxBody;
-import entities.PlayerBody;
+import entities.EnemyBody;
 
-/**
- *
- * @author karnh7634
- */
 public class ContListener implements ContactListener{
 
     @Override
@@ -27,15 +22,9 @@ public class ContListener implements ContactListener{
         if(fa.getUserData() == null || fb.getUserData() == null) return;
         if(isContact(fa,fb)){
             System.out.println(fa.getUserData().toString());
-            if(fa.getUserData().toString().contains("PlayerBody") && fb.getUserData().toString().contains("BoxBody")){
-                PlayerBody tba = (PlayerBody) fa.getUserData();
-                BoxBody tbb = (BoxBody) fb.getUserData();
-                tba.hit();
-                tbb.hit();
-            }
-            if(fa.getUserData().toString().contains("BoxBody") && fb.getUserData().toString().contains("BoxBody")){
-                BoxBody tba = (BoxBody) fa.getUserData();
-                BoxBody tbb = (BoxBody) fb.getUserData();
+            if(fa.getUserData().toString().contains("EnemyBody") && fb.getUserData().toString().contains("EnemyBody")){
+                EnemyBody tba = (EnemyBody) fa.getUserData();
+                EnemyBody tbb = (EnemyBody) fb.getUserData();
                 tba.hit();
                 tbb.hit();
             }

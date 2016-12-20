@@ -12,6 +12,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import java.util.HashSet;
 import java.util.Set;
 import utils.Constants;
@@ -24,7 +26,6 @@ public class PlayerBody {
     public Body body;
     public String id;
     public int nWidth, nJump, nDoubleJump, nAirJump;
-    public float fSpeed, fGravity  = -0.1f;
     public PlayerBody(World world, String id, float x, float y, int nWidth){
         this.id = id;
         this.nWidth = nWidth;
@@ -37,7 +38,7 @@ public class PlayerBody {
         bdef.fixedRotation = true;
         bdef.type = BodyDef.BodyType.DynamicBody;
         bdef.position.set(x/Constants.PPM, y/Constants.PPM);
-        
+//        RevoluteJointDef rj = new RevoluteJointDef();
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(nWidth/Constants.PPM / 2, nWidth/Constants.PPM / 2);
         
@@ -55,42 +56,5 @@ public class PlayerBody {
     
     public void hit(){
         System.out.println(id + " : hiteroni");
-    }
-    
-    public void inputUpdate(float delta){
-        float horizontalForce = 0, x=0 , y=0;
-        fSpeed += fGravity;
-        if(Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-            horizontalForce--;
-        }
-        
-        if(Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-            horizontalForce++;
-        }
-        
-        if(this.body.getLinearVelocity().y == 0) {  nJump = 0; nDoubleJump = 0;}
-        
-        if(Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)){
-            if(nJump<3){
-                this.body.applyForceToCenter(0,40,true);
-                nJump++;
-            }
-        } else {
-            if(this.body.getLinearVelocity().y>0){
-                if(nDoubleJump==0){
-                    System.out.println("yeah");
-                    nJump = 0;
-                    nDoubleJump++;
-                }
-            }
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-            this.body.applyForceToCenter(0,40,true);
-        }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
-            this.body.applyForceToCenter(0,-100,true);
-        }
-        this.body.setLinearVelocity(horizontalForce*5, this.body.getLinearVelocity().y);  
-//        System.out.println(this.body.getLinearVelocity().y + " " + nJump + " " + nDoubleJump);
     }
 }

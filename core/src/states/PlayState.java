@@ -21,6 +21,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import entities.BoxBody;
+import entities.EnemyBody;
 import entities.PlayerBody;
 import handlers.ContListener;
 import java.util.HashSet;
@@ -32,7 +33,9 @@ import utils.TiledObjectUtil;
 public class PlayState extends GameState {
     private final float fSCALE = 2f;
     private PlayerBody bbPlayer;
-    private BoxBody  bbObj1, bbObj2, arBodies[];
+    private BoxBody  bbObj1, bbObj2;
+    private EnemyBody ebEnemy , ebPlayer;
+    
     private OrthogonalTiledMapRenderer tmr;
     private TiledMap map;
     private float fSpeed=0, fGravity=-0.1f;
@@ -44,19 +47,17 @@ public class PlayState extends GameState {
     private int height = Box2DMain.V_HEIGHT, width = Box2DMain.V_WIDTH;
     
     
-    private int nArrayMax = 10;
     public PlayState(GameStateManager gsm){
         super(gsm);
         this.world = new World(new Vector2(0,-9.8f), false);
         this.world.setContactListener(new ContListener());
         b2dr = new Box2DDebugRenderer();
-        bbPlayer = new PlayerBody(world, "PLAYER", 10, 400, 20);
-        bbObj1 = new BoxBody(world, "OBJ1", 20, 400, 10);
-        bbObj2 = new BoxBody(world, "OBJ2", 30, 400, 10);
+        ebPlayer = new EnemyBody(world, 20f, 400f ,20,20,false, 0f,utils.Constants.Bit_Player, 4);
+        ebEnemy = new EnemyBody(world, 10f, 400f ,10,10,false, 0f,utils.Constants.Bit_Enemy, 8);
         texture = new Texture("red.png");
         map = new TmxMapLoader().load("TiledMap.tmx");
         tmr = new OrthogonalTiledMapRenderer(map);
-        TiledObjectUtil.parseTiledObjectLayer(world, map.getLayers().get("collision").getObjects());
+        TiledObjectUtil.parseTiledObjectLayer(world, map);
         resize(width,height);
     }
     
@@ -64,7 +65,7 @@ public class PlayState extends GameState {
     public void update(float delta) {
         world.step(1/60f, 6, 2);
         cameraUpdate();
-        bbPlayer.inputUpdate(delta);
+        ebPlayer.inputUpdate(delta);
         tmr.setView(camera);
     }
 
@@ -72,13 +73,11 @@ public class PlayState extends GameState {
     public void render() {
         Gdx.gl.glClearColor(0.25f, 0.25f, 0.25f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        tmr.render();
+//        tmr.render();
         b2dr.render(world, camera.combined.scl(PPM));
-        System.out.println(bbPlayer.body.getPosition().x * PPM + " " 
-                + bbPlayer.body.getPosition().y * PPM);
         
         batch.begin();
-        batch.draw(texture, bbPlayer.body.getPosition().x *PPM - 10, bbPlayer.body.getPosition().y*PPM - 10, 20, 20);
+        batch.draw(texture, ebPlayer.body.getPosition().x *PPM - 10, ebPlayer.body.getPosition().y*PPM - 10, 20, 20);
         batch.end();
         
     }
@@ -99,12 +98,10 @@ public class PlayState extends GameState {
         // a + (b - a) * lerp
         // b = target 
         // a = current camera position
-        if(bbPlayer.body.getPosition().x >= 180/PPM)
-        position.x = camera.position.x + (bbPlayer.body.getPosition().x * PPM - camera.position.x) * 0.5f;
-        if(bbPlayer.body.getPosition().y > (200/PPM))
-        position.y = camera.position.y + (bbPlayer.body.getPosition().y * PPM - camera.position.y) * 0.5f;
-//        position.x = 0;
-//        position.y = 0;
+        if(ebPlayer.body.getPosition().x >= 180/PPM)
+        position.x = camera.position.x + (ebPlayer.body.getPosition().x * PPM - camera.position.x) * 0.5f;
+        if(ebPlayer.body.getPosition().y > (280/PPM))
+        position.y = camera.position.y + (ebPlayer.body.getPosition().y * PPM - camera.position.y) * 0.5f;
         
         camera.position.set(position);
         camera.update();
