@@ -22,7 +22,16 @@ import utils.Constants;
  *
  * @author karnh7634
  */
+
+
+
+//Everything is in EnemyBody right now, currently not using this class
+
+
+
+
 public class PlayerBody {
+    
     public Body body;
     public String id;
     public int nWidth, nJump, nDoubleJump, nAirJump;
