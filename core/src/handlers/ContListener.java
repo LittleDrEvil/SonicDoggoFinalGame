@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import entities.EnemyBody;
+import entities.PlayerBody;
 
 public class ContListener implements ContactListener{
 
@@ -18,13 +19,21 @@ public class ContListener implements ContactListener{
         Fixture fa = contact.getFixtureA();
         Fixture fb = contact.getFixtureB();
         
-        if(fa == null || fb ==null) return;
+        if(fa == null || fb == null) return;
         if(fa.getUserData() == null || fb.getUserData() == null) return;
         if(isContact(fa,fb)){
             System.out.println(fa.getUserData().toString());
-            if(fa.getUserData().toString().contains("EnemyBody") && fb.getUserData().toString().contains("EnemyBody")){
+            System.out.println(fb.getUserData().toString());
+//            if(fa.getUserData().toString().contains("EnemyBody") && fb.getUserData().toString().contains("EnemyBody")){
+//                EnemyBody tba = (EnemyBody) fa.getUserData();
+//                EnemyBody tbb = (EnemyBody) fb.getUserData();
+//                tba.hit();
+//                tbb.hit();
+//            }
+            if((fa.getUserData().toString().contains("EnemyBody") && fb.getUserData().toString().contains("PlayerBody"))){
+                System.out.println("hit");
+                PlayerBody tbb = (PlayerBody) fb.getUserData();
                 EnemyBody tba = (EnemyBody) fa.getUserData();
-                EnemyBody tbb = (EnemyBody) fb.getUserData();
                 tba.hit();
                 tbb.hit();
             }

@@ -1,6 +1,7 @@
 package states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -41,8 +42,9 @@ public class PlayState extends GameState {
         this.world = new World(new Vector2(0,-9.8f), false);
         this.world.setContactListener(new ContListener());
         b2dr = new Box2DDebugRenderer();
-        ebPlayer = new EnemyBody(world, 20f, 400f ,20,20,false, 0f,utils.Constants.Bit_Player, 4);
-        ebEnemy = new EnemyBody(world, 10f, 400f ,10,10,false, 0f,utils.Constants.Bit_Enemy, 8);
+//        ebPlayer = new EnemyBody(world, 20f, 400f ,20,20,false, 0f,utils.Constants.Bit_Player, 8);
+        ebEnemy = new EnemyBody(world, 30f, 400f ,10,10,false, 0f,utils.Constants.Bit_Enemy, 8);
+        bbPlayer = new PlayerBody(world,"Player",20, 450, 20, utils.Constants.Bit_Player);
         texture = new Texture("red.png");
         map = new TmxMapLoader().load("TiledMap.tmx");
         tmr = new OrthogonalTiledMapRenderer(map);
@@ -54,7 +56,7 @@ public class PlayState extends GameState {
     public void update(float delta) {
         world.step(1/60f, 6, 2);
         cameraUpdate();
-        ebPlayer.inputUpdate(delta);
+        bbPlayer.inputUpdate(delta);
         tmr.setView(camera);
     }
 
@@ -66,8 +68,9 @@ public class PlayState extends GameState {
         b2dr.render(world, camera.combined.scl(PPM));
         
         batch.begin();
-        batch.draw(texture, ebPlayer.body.getPosition().x *PPM - 10, ebPlayer.body.getPosition().y*PPM - 10, 20, 20);
+//        batch.draw(texture, bbPlayer.body.getPosition().x *PPM - 10, bbPlayer.body.getPosition().y*PPM - 10, 20, 20);
         batch.end();
+         if(Gdx.input.isKeyJustPressed(Input.Keys.R)) world.destroyBody(bbPlayer.body);
         
     }
     public void resize(int width, int height){
@@ -87,10 +90,10 @@ public class PlayState extends GameState {
         // a + (b - a) * lerp
         // b = target 
         // a = current camera position
-        if(ebPlayer.body.getPosition().x >= 180/PPM)
-        position.x = camera.position.x + (ebPlayer.body.getPosition().x * PPM - camera.position.x) * 0.5f;
-        if(ebPlayer.body.getPosition().y > (280/PPM))
-        position.y = camera.position.y + (ebPlayer.body.getPosition().y * PPM - camera.position.y) * 0.5f;
+        if(bbPlayer.body.getPosition().x >= 180/PPM)
+        position.x = camera.position.x + (bbPlayer.body.getPosition().x * PPM - camera.position.x) * 0.5f;
+        if(bbPlayer.body.getPosition().y > (280/PPM))
+        position.y = camera.position.y + (bbPlayer.body.getPosition().y * PPM - camera.position.y) * 0.5f;
         
         camera.position.set(position);
         camera.update();

@@ -25,19 +25,18 @@ import utils.Constants;
 
 
 
-//Everything is in EnemyBody right now, currently not using this class
-
-
-
-
 public class PlayerBody {
     
     public Body body;
     public String id;
-    public int nWidth, nJump, nDoubleJump, nAirJump;
-    public PlayerBody(World world, String id, float x, float y, int nWidth){
+    public int nWidth, nJump, nDoubleJump, nDouble, nAirJump;
+    public short MaskBit;
+    public String sName = "Player";
+    
+    public PlayerBody(World world, String id, float x, float y, int nWidth, short MaskBit){
         this.id = id;
         this.nWidth = nWidth;
+        this.MaskBit = MaskBit;
         createBoxBody(world, x , y);
 //        this.body.setLinearDamping(10);
     }
@@ -56,14 +55,55 @@ public class PlayerBody {
         fdef.density = 1f;
         fdef.friction = 0f;
         
+        fdef.filter.categoryBits = 4;
+        
+        fdef.filter.maskBits = utils.Constants.Bit_Map|utils.Constants.Bit_Enemy;
+        
         this.body = world.createBody(bdef);
-        this.body.setAngularDamping(3);
         this.body.createFixture(fdef).setUserData(this);
+        System.out.println(this.body.toString());
         
     }
     
     
     public void hit(){
         System.out.println(id + " : hiteroni");
+    }
+    
+    public void inputUpdate(float delta){
+        if(this.MaskBit == (short) 4){
+        float horizontalForce = 0, x=0 , y=0;
+        if(Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+            horizontalForce--;
+        }
+        
+        if(Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+            horizontalForce++;
+        }
+        
+        if(this.body.getLinearVelocity().y == 0) {  nJump = 0; nDoubleJump = 0;}
+        
+        if(Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)){
+            if(nJump<3){
+                this.body.applyForceToCenter(0, 40, true);
+                nJump++;
+            }
+        } else {
+            if(this.body.getLinearVelocity().y>0){
+                if(nDoubleJump==0){
+                    nJump = 0;
+                    nDoubleJump++;
+                }
+            }
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+            this.body.applyForceToCenter(0,40,true);
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
+            this.body.applyForceToCenter(0,-100,true);
+        }
+        this.body.setLinearVelocity(horizontalForce*5, this.body.getLinearVelocity().y);  
+//        System.out.println(this.body.getLinearVelocity().y + " " + nJump + " " + nDoubleJump);
+        }
     }
 }
