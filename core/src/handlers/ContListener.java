@@ -22,16 +22,7 @@ public class ContListener implements ContactListener{
         if(fa == null || fb == null) return;
         if(fa.getUserData() == null || fb.getUserData() == null) return;
         if(isContact(fa,fb)){
-            System.out.println(fa.getUserData().toString());
-            System.out.println(fb.getUserData().toString());
-//            if(fa.getUserData().toString().contains("EnemyBody") && fb.getUserData().toString().contains("EnemyBody")){
-//                EnemyBody tba = (EnemyBody) fa.getUserData();
-//                EnemyBody tbb = (EnemyBody) fb.getUserData();
-//                tba.hit();
-//                tbb.hit();
-//            }
             if((fa.getUserData().toString().contains("EnemyBody") && fb.getUserData().toString().contains("PlayerBody"))){
-                System.out.println("hit");
                 PlayerBody tbb = (PlayerBody) fb.getUserData();
                 EnemyBody tba = (EnemyBody) fa.getUserData();
                 tba.hit();

@@ -14,21 +14,23 @@ import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 import utils.Constants;
 
 public class EnemyBody {
-    private String id;
+    private String id = "EnemyHead";
     public Body body1, body2;
     private int nWidth;
     private int  nJump, nDoubleJump, nAirJump;
     private short MaskBit;
     public World world;
     private Vector2 vPos = new Vector2();
+    public boolean bHit = false;
+    public WeldJointDef jdef= new WeldJointDef();
     
     
     public EnemyBody(World world, float x, float y,int nWidth, int Height, boolean isStatic, float fRest, short MaskBit, int nFilter){
         BodyDef bdef = new BodyDef();
         FixtureDef fdef = new FixtureDef();
-        WeldJointDef jdef= new WeldJointDef();
         PolygonShape shape = new PolygonShape();
         PolygonShape shape2 = new PolygonShape();
+        this.world = world;
         this.MaskBit = MaskBit;
         vPos.x = x/Constants.PPM;
         vPos.y = y/Constants.PPM;
@@ -48,7 +50,7 @@ public class EnemyBody {
         
         bdef.fixedRotation = true;
         bdef.type = BodyDef.BodyType.DynamicBody;
-        bdef.position.set( x/Constants.PPM, (y+5)/Constants.PPM);
+        bdef.position.set( x/Constants.PPM, (y+6)/Constants.PPM);
         
         body2 = world.createBody(bdef);
         
@@ -56,7 +58,7 @@ public class EnemyBody {
         
         jdef.collideConnected = false;
         
-        shape.setAsBox(nWidth/Constants.PPM / 2, nWidth/Constants.PPM / 2);
+        shape.setAsBox((nWidth+5)/Constants.PPM / 2, nWidth/Constants.PPM / 2);
         
         fdef.shape = shape;
         fdef.density = 1f;
@@ -65,7 +67,7 @@ public class EnemyBody {
         
         jdef.bodyA.createFixture(fdef);
         
-        shape.setAsBox(nWidth/2/Constants.PPM / 2, nWidth/2/Constants.PPM / 2);
+        shape.setAsBox(20/2/Constants.PPM / 2, (nWidth-3)/2/Constants.PPM / 2);
         fdef.shape = shape;
         fdef.density = 3f;
         fdef.friction = 5f;
@@ -78,9 +80,6 @@ public class EnemyBody {
         world.createJoint(jdef);
 //        
         
-        if(this.MaskBit == (short) 4){
-            fdef.filter.maskBits = utils.Constants.Bit_Map|utils.Constants.Bit_Enemy;
-        }
         
         shape.dispose();    
     }
@@ -88,5 +87,15 @@ public class EnemyBody {
     
     public void hit(){
         System.out.println(id + " : hiteroni");
+        bHit = true;
+    }
+    
+    public World kill(World world){
+        if(bHit) {
+            world.destroyBody(body2); 
+            world.destroyBody(body1);
+            bHit=false;
+        }
+        return world;
     }
 }
