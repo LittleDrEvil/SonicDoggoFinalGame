@@ -39,7 +39,7 @@ public class TiledObjectUtil {
             fdef.shape = shape;
             fdef.filter.categoryBits = utils.Constants.Bit_Map;
             fdef.filter.maskBits = utils.Constants.Bit_Enemy|utils.Constants.Bit_Player;
-            body.createFixture(fdef);
+            body.createFixture(fdef).setUserData(fdef);
             shape.dispose();
         }
     }

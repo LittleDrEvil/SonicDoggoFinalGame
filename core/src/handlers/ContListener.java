@@ -22,11 +22,16 @@ public class ContListener implements ContactListener{
         if(fa == null || fb == null) return;
         if(fa.getUserData() == null || fb.getUserData() == null) return;
         if(isContact(fa,fb)){
+            System.out.println(fa.getUserData().toString());
             if((fa.getUserData().toString().contains("EnemyBody") && fb.getUserData().toString().contains("PlayerBody"))){
                 PlayerBody tbb = (PlayerBody) fb.getUserData();
                 EnemyBody tba = (EnemyBody) fa.getUserData();
                 tba.hit();
-                tbb.hit();
+                tbb.hitEnemy();
+            }
+            if((fa.getUserData().toString().contains("FixtureDef") && fb.getUserData().toString().contains("PlayerBody"))){
+                PlayerBody tbb = (PlayerBody) fb.getUserData();
+                tbb.hitMap();
             }
         }
     }
@@ -49,8 +54,8 @@ public class ContListener implements ContactListener{
     }
     
     private boolean isContact(Fixture a, Fixture b){
-                return true;
-            }
+        return true;
+    }
 //        return(a.getUserData() instanceof BoxBody && b.getUserData() instanceof BoxBody);
 
     

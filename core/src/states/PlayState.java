@@ -67,6 +67,7 @@ public class PlayState extends GameState {
 //        tmr.render();
         b2dr.render(world, camera.combined.scl(PPM));
         world = ebEnemy.kill(world);
+        world = bbPlayer.kill(world);
         batch.begin();
 //        batch.draw(texture, bbPlayer.body.getPosition().x *PPM - 10, bbPlayer.body.getPosition().y*PPM - 10, 20, 20);
         batch.end();
