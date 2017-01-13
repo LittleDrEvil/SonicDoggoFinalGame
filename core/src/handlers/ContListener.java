@@ -18,15 +18,15 @@ public class ContListener implements ContactListener{
     public void beginContact(Contact contact) {
         Fixture fa = contact.getFixtureA();
         Fixture fb = contact.getFixtureB();
-        
         if(fa == null || fb == null) return;
         if(fa.getUserData() == null || fb.getUserData() == null) return;
+        
+        System.out.println(fa.getUserData().toString() + " " + fb.getUserData().toString());
         if(isContact(fa,fb)){
-            System.out.println(fa.getUserData().toString());
-            if((fa.getUserData().toString().contains("EnemyBody") && fb.getUserData().toString().contains("PlayerBody"))){
+            if((fa.getUserData().toString().contains("EnemyBody") && fb.getUserData().toString().contains(".PlayerBody"))){
                 PlayerBody tbb = (PlayerBody) fb.getUserData();
                 EnemyBody tba = (EnemyBody) fa.getUserData();
-                tba.hit();
+                tba.hit(tba);
                 tbb.hitEnemy();
             }
             if((fa.getUserData().toString().contains("FixtureDef") && fb.getUserData().toString().contains("PlayerBody"))){

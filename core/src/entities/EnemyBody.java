@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.JointDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -29,7 +30,6 @@ public class EnemyBody {
         BodyDef bdef = new BodyDef();
         FixtureDef fdef = new FixtureDef();
         PolygonShape shape = new PolygonShape();
-        PolygonShape shape2 = new PolygonShape();
         this.world = world;
         this.MaskBit = MaskBit;
         vPos.x = x/Constants.PPM;
@@ -75,18 +75,19 @@ public class EnemyBody {
         
         jdef.bodyB.createFixture(fdef).setUserData(this);
         
-        jdef.initialize(body1, body2, vPos);
+        jdef.initialize(jdef.bodyA, jdef.bodyB, vPos);
         
         world.createJoint(jdef);
-//        
-        
         
         shape.dispose();    
     }
     
     
-    public void hit(){
+    public void hit(EnemyBody tba){
         System.out.println(id + " : hiteroni");
+        System.out.println(tba.jdef.bodyB.toString() + " 1");
+        System.out.println(jdef.bodyB.toString() + " 2");
+        if(tba.jdef.bodyA == jdef.bodyB)
         bHit = true;
     }
     

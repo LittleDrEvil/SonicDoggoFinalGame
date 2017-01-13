@@ -47,7 +47,6 @@ public class PlayerBody {
         bdef.fixedRotation = true;
         bdef.type = BodyDef.BodyType.DynamicBody;
         bdef.position.set(x / Constants.PPM, y / Constants.PPM);
-//        RevoluteJointDef rj = new RevoluteJointDef();
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(nWidth / Constants.PPM / 2, nWidth / Constants.PPM / 2);
 
@@ -55,14 +54,13 @@ public class PlayerBody {
         fdef.shape = shape;
         fdef.density = 1f;
         fdef.friction = 0f;
-
+        fdef.restitution = 0f;
         fdef.filter.categoryBits = 4;
 
         fdef.filter.maskBits = utils.Constants.Bit_Map | utils.Constants.Bit_Enemy;
 
         this.body = world.createBody(bdef);
         this.body.createFixture(fdef).setUserData(this);
-        System.out.println(this.body.toString());
 
     }
 
@@ -70,17 +68,18 @@ public class PlayerBody {
         System.out.println(id + " : hiteroni");
         bHit = true;
     }
-    
-    public World kill(World world){
-        if(bHit) {
+
+    public World kill(World world) {
+        if (bHit) {
             world.destroyBody(body);
-            bHit=false;
+            bHit = false;
         }
         return world;
     }
-    
-    public void hitMap(){
-        bJump = false;
+
+    public void hitMap() {
+        nJump = 0;
+        nDouble = 0;
     }
 
     public void inputUpdate(float delta) {
@@ -96,27 +95,22 @@ public class PlayerBody {
             }
 
             if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
-
-                if (bJump && nDoubleJump == 0) {
-                    System.out.println("test");
-                    this.body.setLinearVelocity(this.body.getLinearVelocity().x, 0f);
-                    nDoubleJump++;
-                }
-                if (nJump <= 2 && nDouble != 3) {
+                if (nJump <= 3) {
+                    if (nJump == 0) 
+                        this.body.setLinearVelocity(this.body.getLinearVelocity().x, 0.1f);
                     nJump++;
                     this.body.applyForceToCenter(0, 35, true);
                 }
             } else {
-                if (nJump > 0) {
-                    nJump = 0;
+                if (nJump > 0 && nDouble != 1) {
                     nDouble++;
+                    nJump = 0;
                 }
             }
-            System.out.println(nDouble);
-            if (this.body.getLinearVelocity().y == 0 && !bJump) {
-                nJump = 0;
-                nDouble = 0;
-            } else bJump = true;
+//            if (this.body.getLinearVelocity().y == 0) {
+//                nJump = 0;
+//                nDouble = 0;
+//            }
 
             if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
                 this.body.applyForceToCenter(0, 40, true);
