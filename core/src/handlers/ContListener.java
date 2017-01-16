@@ -20,16 +20,16 @@ public class ContListener implements ContactListener{
         Fixture fb = contact.getFixtureB();
         if(fa == null || fb == null) return;
         if(fa.getUserData() == null || fb.getUserData() == null) return;
-        
-        System.out.println(fa.getUserData().toString() + " " + fb.getUserData().toString());
         if(isContact(fa,fb)){
-            if((fa.getUserData().toString().contains("EnemyBody") && fb.getUserData().toString().contains(".PlayerBody"))){
-                PlayerBody tbb = (PlayerBody) fb.getUserData();
+//            System.out.println(fa.getUserData().toString());
+            if((fa.getUserData().toString().contains("EnemyBody") && fb.getUserData().toString().contains("PlayerBody"))){
+                System.out.println(fa.getUserData().toString() + " " + fb.getUserData().toString());
                 EnemyBody tba = (EnemyBody) fa.getUserData();
-                tba.hit(tba);
+                PlayerBody tbb = (PlayerBody) fb.getUserData();
+                tba.hit(fa, fb);
                 tbb.hitEnemy();
             }
-            if((fa.getUserData().toString().contains("FixtureDef") && fb.getUserData().toString().contains("PlayerBody"))){
+            if((fa.getUserData().toString().contains("2") && fb.getUserData().toString().contains("PlayerBody"))){
                 PlayerBody tbb = (PlayerBody) fb.getUserData();
                 tbb.hitMap();
             }

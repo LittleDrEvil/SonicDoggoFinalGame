@@ -66,20 +66,14 @@ public class PlayerBody {
 
     public void hitEnemy() {
         System.out.println(id + " : hiteroni");
-        bHit = true;
-    }
-
-    public World kill(World world) {
-        if (bHit) {
-            world.destroyBody(body);
-            bHit = false;
-        }
-        return world;
     }
 
     public void hitMap() {
+        if(nDouble == 0)
+            System.out.println("hit " + nJump);
         nJump = 0;
         nDouble = 0;
+//        System.out.println((int)this.body.getLinearVelocity().y);
     }
 
     public void inputUpdate(float delta) {
@@ -107,11 +101,6 @@ public class PlayerBody {
                     nJump = 0;
                 }
             }
-//            if (this.body.getLinearVelocity().y == 0) {
-//                nJump = 0;
-//                nDouble = 0;
-//            }
-
             if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
                 this.body.applyForceToCenter(0, 40, true);
             }

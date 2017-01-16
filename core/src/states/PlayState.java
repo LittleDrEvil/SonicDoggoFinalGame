@@ -66,7 +66,7 @@ public class PlayState extends GameState {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 //        tmr.render();
         b2dr.render(world, camera.combined.scl(PPM));
-        world = ebEnemy.kill(world);
+        world = ebEnemy.Action(world, bbPlayer);
 //        world = bbPlayer.kill(world);
         batch.begin();
 //        batch.draw(texture, bbPlayer.body.getPosition().x *PPM - 10, bbPlayer.body.getPosition().y*PPM - 10, 20, 20);
