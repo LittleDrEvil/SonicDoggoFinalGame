@@ -26,11 +26,11 @@ public class PlayerBody {
 
     public Body body;
     public String id;
-    public int nWidth, nJump, nDoubleJump, nDouble, nAirJump;
+    public int nWidth, nJump, nDoubleJump, nDouble, nAirJump, nHealth = 3;
     public float nX, nY;
     public short MaskBit;
     public String sName = "Player";
-    public boolean bJump, bDone, bHit;
+    public boolean bJump, bDone, bHit, bDead = false;
 
     public PlayerBody(World world, String id, float x, float y, int nWidth, short MaskBit) {
         nX = x;
@@ -65,15 +65,24 @@ public class PlayerBody {
     }
 
     public void hitEnemy() {
-        System.out.println(id + " : hiteroni");
+        nHealth--;
+        System.out.println("healthlost, remaining health = " + nHealth);
     }
 
     public void hitMap() {
-        if(nDouble == 0)
-            System.out.println("hit " + nJump);
+//        if(nDouble == 0)
         nJump = 0;
         nDouble = 0;
 //        System.out.println((int)this.body.getLinearVelocity().y);
+    }
+    
+    public World Death(World world){
+        if(nHealth==0){
+            world.destroyBody(this.body);
+            nHealth = -1;
+            bDead = true;
+        }
+        return world;
     }
 
     public void inputUpdate(float delta) {

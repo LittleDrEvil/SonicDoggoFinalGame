@@ -2,6 +2,7 @@ package entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -23,14 +24,15 @@ public class EnemyBody {
     private short MaskBit;
     public World world;
     private Vector2 vPos = new Vector2();
-    public boolean bHit = false;
+    public boolean bHit = false, bDead = false;
     public int nHit = 0;
     public WeldJointDef jdef = new WeldJointDef();
     public FixtureDef fdef1 = new FixtureDef(), fdef2 = new FixtureDef();
+    public Texture tEnemy;
 
     public EnemyBody(World world, float x, float y, int nWidth, int Height, boolean isStatic, float fRest, short MaskBit, int nFilter) {
         BodyDef bdef = new BodyDef();
-
+        tEnemy = new Texture("Goomba.png");
         PolygonShape shape = new PolygonShape();
         this.world = world;
         this.MaskBit = MaskBit;
@@ -87,10 +89,11 @@ public class EnemyBody {
     }
 
     public void hit(Fixture fa, Fixture fb) {
-        System.out.println(id + " : hiteroni");
         if (fa.getBody() == jdef.bodyB) {
+            System.out.println("1");
             nHit = 1;
         } else  if (fa.getBody() != jdef.bodyB){
+            System.out.println("2");
             nHit = 2;
         }
     }
@@ -99,6 +102,7 @@ public class EnemyBody {
         if (nHit == 1) {
             world.destroyBody(body1);
             world.destroyBody(body2);
+            bDead = true;
             nHit = 0;
         } else if (nHit == 2) {
             pbPlayer.hitEnemy();

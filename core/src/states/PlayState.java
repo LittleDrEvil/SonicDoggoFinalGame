@@ -35,6 +35,7 @@ public class PlayState extends GameState {
     private Texture texture;
     private int nJump = 0;
     private int height = Box2DMain.V_HEIGHT, width = Box2DMain.V_WIDTH;
+    private boolean bDead;
     
     
     public PlayState(GameStateManager gsm){
@@ -45,7 +46,7 @@ public class PlayState extends GameState {
 //        ebPlayer = new EnemyBody(world, 20f, 400f ,20,20,false, 0f,utils.Constants.Bit_Player, 8);
         ebEnemy = new EnemyBody(world, 30f, 400f ,10,10,false, 0f,utils.Constants.Bit_Enemy, 8);
         bbPlayer = new PlayerBody(world,"Player",20, 450, 20, utils.Constants.Bit_Player);
-        texture = new Texture("red.png");
+        texture = new Texture("Luigi.png");
         map = new TmxMapLoader().load("TiledMap.tmx");
         tmr = new OrthogonalTiledMapRenderer(map);
         TiledObjectUtil.parseTiledObjectLayer(world, map);
@@ -64,14 +65,16 @@ public class PlayState extends GameState {
     public void render() {
         Gdx.gl.glClearColor(0.25f, 0.25f, 0.25f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//        tmr.render();
-        b2dr.render(world, camera.combined.scl(PPM));
+        tmr.render();
+//        b2dr.render(world, camera.combined.scl(PPM));
         world = ebEnemy.Action(world, bbPlayer);
-//        world = bbPlayer.kill(world);
+        world = bbPlayer.Death(world);
         batch.begin();
-//        batch.draw(texture, bbPlayer.body.getPosition().x *PPM - 10, bbPlayer.body.getPosition().y*PPM - 10, 20, 20);
+        if(!bbPlayer.bDead)
+        batch.draw(texture, bbPlayer.body.getPosition().x *PPM - 10, bbPlayer.body.getPosition().y*PPM - 10, 20, 20);
+        if(!ebEnemy.bDead)
+        batch.draw(ebEnemy.tEnemy, ebEnemy.body1.getPosition().x * PPM - 10, ebEnemy.body1.getPosition().y*PPM - 10, 16, 16);
         batch.end();
-         if(Gdx.input.isKeyJustPressed(Input.Keys.R)) world.destroyBody(bbPlayer.body);
         
     }
     public void resize(int width, int height){

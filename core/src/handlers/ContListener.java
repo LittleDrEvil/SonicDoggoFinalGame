@@ -27,7 +27,7 @@ public class ContListener implements ContactListener{
                 EnemyBody tba = (EnemyBody) fa.getUserData();
                 PlayerBody tbb = (PlayerBody) fb.getUserData();
                 tba.hit(fa, fb);
-                tbb.hitEnemy();
+//                tbb.hitEnemy();
             }
             if((fa.getUserData().toString().contains("2") && fb.getUserData().toString().contains("PlayerBody"))){
                 PlayerBody tbb = (PlayerBody) fb.getUserData();
