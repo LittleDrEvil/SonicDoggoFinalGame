@@ -23,9 +23,7 @@ import utils.TiledObjectUtil;
 public class PlayState extends GameState {
     private final float fSCALE = 2f;
     private PlayerBody bbPlayer;
-    private BoxBody  bbObj1, bbObj2;
-    private EnemyBody ebEnemy , ebPlayer;
-    
+    private EnemyBody[] arebEnemies = new EnemyBody[100];
     private OrthogonalTiledMapRenderer tmr;
     private TiledMap map;
     private float fSpeed=0, fGravity=-0.1f;
@@ -44,8 +42,10 @@ public class PlayState extends GameState {
         this.world.setContactListener(new ContListener());
         b2dr = new Box2DDebugRenderer();
 //        ebPlayer = new EnemyBody(world, 20f, 400f ,20,20,false, 0f,utils.Constants.Bit_Player, 8);
-        ebEnemy = new EnemyBody(world, 30f, 400f ,10,10,false, 0f,utils.Constants.Bit_Enemy, 8);
-        bbPlayer = new PlayerBody(world,"Player",20, 450, 20, utils.Constants.Bit_Player);
+        for (int i = 0; i < 100; i++) {
+        arebEnemies[i] = new EnemyBody(world, 30f*i, 400f ,10,10,false, 0f,utils.Constants.Bit_Enemy, 8);
+        }
+        bbPlayer = new PlayerBody(world,"Player",20, 450, 16, 20, utils.Constants.Bit_Player);
         texture = new Texture("Luigi.png");
         map = new TmxMapLoader().load("TiledMap.tmx");
         tmr = new OrthogonalTiledMapRenderer(map);
@@ -66,17 +66,25 @@ public class PlayState extends GameState {
         Gdx.gl.glClearColor(0.25f, 0.25f, 0.25f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         tmr.render();
-//        b2dr.render(world, camera.combined.scl(PPM));
-        world = ebEnemy.Action(world, bbPlayer);
         world = bbPlayer.Death(world);
         batch.begin();
-        if(!bbPlayer.bDead)
-        batch.draw(texture, bbPlayer.body.getPosition().x *PPM - 10, bbPlayer.body.getPosition().y*PPM - 10, 20, 20);
-        if(!ebEnemy.bDead)
-        batch.draw(ebEnemy.tEnemy, ebEnemy.body1.getPosition().x * PPM - 10, ebEnemy.body1.getPosition().y*PPM - 10, 16, 16);
+        if(!bbPlayer.bDead){
+            if(bbPlayer.bLeft)
+                batch.draw(texture, bbPlayer.body.getPosition().x *PPM - 8, bbPlayer.body.getPosition().y*PPM - 10,
+                    16, 20, 0, 0, 16, 20, true, false);
+            if(!bbPlayer.bLeft)
+                batch.draw(texture, bbPlayer.body.getPosition().x *PPM - 8, bbPlayer.body.getPosition().y*PPM - 10,
+                    16, 20, 0, 0, 16, 20, false, false);
+        }
+        for (int i = 0; i < 100; i++) {
+            if(!arebEnemies[i].bDead)
+            batch.draw(arebEnemies[i].tEnemy, arebEnemies[i].body1.getPosition().x * PPM - 8,arebEnemies[i].body1.getPosition().y*PPM - 5, 16, 16);
+            world = arebEnemies[i].Action(world, bbPlayer);
+        }
         batch.end();
-        
+        b2dr.render(world, camera.combined.scl(PPM));
     }
+    @Override
     public void resize(int width, int height){
         camera.setToOrtho(false, width/2f, height/2);
     }

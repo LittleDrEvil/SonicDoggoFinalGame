@@ -90,16 +90,15 @@ public class EnemyBody {
 
     public void hit(Fixture fa, Fixture fb) {
         if (fa.getBody() == jdef.bodyB) {
-            System.out.println("1");
             nHit = 1;
         } else  if (fa.getBody() != jdef.bodyB){
-            System.out.println("2");
             nHit = 2;
         }
     }
 
     public World Action(World world, PlayerBody pbPlayer) {
         if (nHit == 1) {
+            pbPlayer.hitEnemyHead();
             world.destroyBody(body1);
             world.destroyBody(body2);
             bDead = true;

@@ -26,17 +26,18 @@ public class PlayerBody {
 
     public Body body;
     public String id;
-    public int nWidth, nJump, nDoubleJump, nDouble, nAirJump, nHealth = 3;
+    public int nWidth,nHeight, nJump, nDoubleJump, nDouble, nAirJump, nHealth = 3, nScore = 0;
     public float nX, nY;
     public short MaskBit;
     public String sName = "Player";
-    public boolean bJump, bDone, bHit, bDead = false;
+    public boolean bJump, bDone, bHit, bDead = false, bLeft = false;
 
-    public PlayerBody(World world, String id, float x, float y, int nWidth, short MaskBit) {
+    public PlayerBody(World world, String id, float x, float y, int nWidth, int nHeight, short MaskBit) {
         nX = x;
         nY = y;
         this.id = id;
         this.nWidth = nWidth;
+        this.nHeight = nHeight;
         this.MaskBit = MaskBit;
         createBoxBody(world, x, y);
 //        this.body.setLinearDamping(10);
@@ -48,11 +49,11 @@ public class PlayerBody {
         bdef.type = BodyDef.BodyType.DynamicBody;
         bdef.position.set(x / Constants.PPM, y / Constants.PPM);
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(nWidth / Constants.PPM / 2, nWidth / Constants.PPM / 2);
+        shape.setAsBox(nWidth / Constants.PPM / 2, nHeight / Constants.PPM / 2);
 
         FixtureDef fdef = new FixtureDef();
         fdef.shape = shape;
-        fdef.density = 1f;
+        fdef.density = 1.25f;
         fdef.friction = 0f;
         fdef.restitution = 0f;
         fdef.filter.categoryBits = 4;
@@ -65,15 +66,19 @@ public class PlayerBody {
     }
 
     public void hitEnemy() {
+        this.body.setLinearVelocity(this.body.getLinearVelocity().x, this.body.getLinearVelocity().y*-1);
         nHealth--;
         System.out.println("healthlost, remaining health = " + nHealth);
     }
+    public void hitEnemyHead() {
+        this.body.setLinearVelocity(this.body.getLinearVelocity().x, (3));
+        nScore += 100;
+        System.out.println(nScore);
+    }
 
     public void hitMap() {
-//        if(nDouble == 0)
         nJump = 0;
         nDouble = 0;
-//        System.out.println((int)this.body.getLinearVelocity().y);
     }
     
     public World Death(World world){
@@ -81,6 +86,10 @@ public class PlayerBody {
             world.destroyBody(this.body);
             nHealth = -1;
             bDead = true;
+        }
+        if(this.body.getPosition().y < 0/Constants.PPM && nHealth != -1){
+            System.out.println("death by floor");
+            nHealth = 0; 
         }
         return world;
     }
@@ -90,11 +99,13 @@ public class PlayerBody {
             float fMovement = 0, x = 0, y = 0;
 
             if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-                fMovement--;
+                fMovement-=0.8;
+                bLeft = true;
             }
 
             if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-                fMovement++;
+                fMovement+=0.8;
+                bLeft = false;
             }
 
             if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
@@ -113,9 +124,9 @@ public class PlayerBody {
             if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
                 this.body.applyForceToCenter(0, 40, true);
             }
-            if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-                this.body.applyForceToCenter(0, -10, true);
-            }
+//            if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+//                this.body.applyForceToCenter(0, -10, true);
+//            }
             this.body.setLinearVelocity(fMovement * 5, this.body.getLinearVelocity().y);
         }
     }
