@@ -29,24 +29,21 @@ public class EnemyBody {
     public WeldJointDef jdef = new WeldJointDef();
     public FixtureDef fdef1 = new FixtureDef(), fdef2 = new FixtureDef();
     public Texture tEnemy;
-
+    
     public EnemyBody(World world, float x, float y, int nWidth, int Height, boolean isStatic, float fRest, short MaskBit, int nFilter) {
+        
         BodyDef bdef = new BodyDef();
         tEnemy = new Texture("Goomba.png");
         PolygonShape shape = new PolygonShape();
+        
         this.world = world;
         this.MaskBit = MaskBit;
         vPos.x = x / Constants.PPM;
         vPos.y = y / Constants.PPM;
+        
+        bdef.type = bdef.type.DynamicBody;
 
-        if (isStatic) {
-            bdef.type = bdef.type.StaticBody;
-        }
-        if (!isStatic) {
-            bdef.type = bdef.type.DynamicBody;
-        }
-
-        bdef.fixedRotation = false;
+        bdef.fixedRotation = true;
         bdef.type = BodyDef.BodyType.DynamicBody;
         bdef.position.set(x / Constants.PPM, y / Constants.PPM);
 
@@ -73,10 +70,11 @@ public class EnemyBody {
 
         jdef.bodyA.createFixture(fdef1).setUserData(this);
 
-        shape.setAsBox(20 / 2 / Constants.PPM / 2, (nWidth - 3) / 2 / Constants.PPM / 2);
+        shape.setAsBox(25 / 4 / Constants.PPM, (nWidth + 5) / 4 / Constants.PPM );
         fdef2.shape = shape;
         fdef2.density = 3f;
         fdef2.friction = 5f;
+        fdef2.restitution = 1f;
         fdef2.filter.categoryBits = 8;
 
         jdef.bodyB.createFixture(fdef2).setUserData(this);
@@ -108,5 +106,9 @@ public class EnemyBody {
             nHit = 0;
         }
         return world;
+    }
+    
+    public void Move(){
+        
     }
 }

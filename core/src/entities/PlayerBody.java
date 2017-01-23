@@ -7,6 +7,7 @@ package entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -22,7 +23,7 @@ import utils.Constants;
  *
  * @author karnh7634
  */
-public class PlayerBody {
+public class PlayerBody extends Sprite{
 
     public Body body;
     public String id;
@@ -40,7 +41,6 @@ public class PlayerBody {
         this.nHeight = nHeight;
         this.MaskBit = MaskBit;
         createBoxBody(world, x, y);
-//        this.body.setLinearDamping(10);
     }
 
     private void createBoxBody(World world, float x, float y) {
@@ -124,9 +124,9 @@ public class PlayerBody {
             if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
                 this.body.applyForceToCenter(0, 40, true);
             }
-//            if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-//                this.body.applyForceToCenter(0, -10, true);
-//            }
+            if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+                this.body.applyForceToCenter(0, -10, true);
+            }
             this.body.setLinearVelocity(fMovement * 5, this.body.getLinearVelocity().y);
         }
     }
