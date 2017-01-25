@@ -41,7 +41,7 @@ public class PlayState extends GameState {
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
-        this.world = new World(new Vector2(0, -9.8f), false);
+        this.world = new World(new Vector2(0, -10f), false);
         this.world.setContactListener(new ContListener());
         b2dr = new Box2DDebugRenderer();
 //        System.out.println(handle.readString());
@@ -51,22 +51,31 @@ public class PlayState extends GameState {
             arnPos[i] = (Integer.parseInt(arstrPoses[i]));
         }
         for (int i = 0; i < 14; i++) {
-            if(arnX[i] == 0 && i%2==0){
-                arnX[i] = arnPos[i];
-            } else if(arnY[i] == 0){
-                arnY[i] = arnPos[i];
+            if(arnX[i/2] == 0 && i%2==0){
+                arnX[i/2] = arnPos[i];
+            } else if(arnY[i/2] == 0){
+                arnY[i/2] = arnPos[i];
             }
         }
+        
         for (int i = 0; i < 7; i++) {
             arebEnemies[i] = new EnemyBody(world, arnX[i], arnY[i], 10, 10, false, 0f, utils.Constants.Bit_Enemy, 8);
         }
+        
         bbPlayer = new PlayerBody(world, "Player", 20, 450, 16, 20, utils.Constants.Bit_Player);
         texture = new Texture("Luigi.png");
         map = new TmxMapLoader().load("TiledMap.tmx");
         
         tmr = new OrthogonalTiledMapRenderer(map);
-        TiledObjectUtil.parseTiledObjectLayer(world, map);
+        
+        TiledObjectUtil.parseTiledObjectLayer(world, map, "map");
+        TiledObjectUtil.parseTiledObjectLayer(world, map, "death");
+        TiledObjectUtil.parseTiledObjectLayer(world, map, "win");
         resize(width, height);
+    }
+    
+    public void Map(){
+        
     }
 
     @Override
@@ -75,6 +84,15 @@ public class PlayState extends GameState {
         cameraUpdate();
         bbPlayer.inputUpdate(delta);
         tmr.setView(camera);
+        if(bbPlayer.bDead == true || Gdx.input.isKeyJustPressed(Input.Keys.LEFT_BRACKET)){
+            System.out.println("Reset");
+            gsm.setState(GameStateManager.State.PLAY);
+            bbPlayer.bDead = false;
+            states.SplashState.nLives--;
+        }
+        if(states.SplashState.nLives <= 0){
+            gsm.setState(GameStateManager.State.OVER);
+        }
     }
 
     @Override
@@ -84,7 +102,6 @@ public class PlayState extends GameState {
         tmr.render();
         world = bbPlayer.Death(world);
         batch.begin();
-//        System.out.println(bbPlayer.body.getPosition().x*PPM + " " + bbPlayer.body.getPosition().y*PPM);
         if (!bbPlayer.bDead) {
             if (bbPlayer.bLeft) {
                 batch.draw(texture, bbPlayer.body.getPosition().x * PPM - 8, bbPlayer.body.getPosition().y * PPM - 10,

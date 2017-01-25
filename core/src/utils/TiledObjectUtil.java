@@ -22,8 +22,8 @@ import com.badlogic.gdx.physics.box2d.World;
  */
 public class TiledObjectUtil {
     
-    public static void parseTiledObjectLayer(World world, TiledMap map){
-        MapObjects objects =  map.getLayers().get("map").getObjects();
+    public static void parseTiledObjectLayer(World world, TiledMap map, String sMap){
+        MapObjects objects =  map.getLayers().get(sMap).getObjects();
         for(MapObject object : objects){
             Shape shape;
             if(object instanceof PolylineMapObject){
@@ -37,7 +37,13 @@ public class TiledObjectUtil {
             bdef.type = BodyDef.BodyType.StaticBody;
             body = world.createBody(bdef);
             fdef.shape = shape;
+            if(sMap == "map")
             fdef.filter.categoryBits = utils.Constants.Bit_Map;
+            if(sMap == "death")
+            fdef.filter.categoryBits = utils.Constants.Bit_Death;
+            if(sMap == "win")
+            fdef.filter.categoryBits = utils.Constants.Bit_Win;
+            
             fdef.filter.maskBits = utils.Constants.Bit_Enemy|utils.Constants.Bit_Player;
             body.createFixture(fdef).setUserData(fdef.filter.categoryBits);
             shape.dispose();

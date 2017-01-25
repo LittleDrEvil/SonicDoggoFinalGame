@@ -28,9 +28,21 @@ public class ContListener implements ContactListener{
                 tba.hit(fa, fb);
 //                tbb.hitEnemy();
             }
-            if((fa.getUserData().toString().contains("2") && fb.getUserData().toString().contains("PlayerBody"))){
+            if((fa.getUserData().toString().contains("16") && fb.getUserData().toString().contains("PlayerBody"))){
+                System.out.println(fa.getUserData().toString());
                 PlayerBody tbb = (PlayerBody) fb.getUserData();
                 tbb.hitMap();
+            }
+            if((fa.getUserData().toString().contains("32") && fb.getUserData().toString().contains("PlayerBody"))){
+                System.out.println(fa.getUserData().toString());
+                PlayerBody tbb = (PlayerBody) fb.getUserData();
+                tbb.hitDeath();
+            }
+            if((fa.getUserData().toString().contains("64") && fb.getUserData().toString().contains("PlayerBody"))){
+                System.out.println(fa.getUserData().toString());
+                PlayerBody tbb = (PlayerBody) fb.getUserData();
+                tbb.hitMap();
+                tbb.Win();
             }
         }
     }

@@ -58,7 +58,7 @@ public class PlayerBody extends Sprite{
         fdef.restitution = 0f;
         fdef.filter.categoryBits = 4;
 
-        fdef.filter.maskBits = utils.Constants.Bit_Map | utils.Constants.Bit_Enemy;
+        fdef.filter.maskBits = utils.Constants.Bit_Map | utils.Constants.Bit_Enemy | utils.Constants.Bit_Death | utils.Constants.Bit_Win;
 
         this.body = world.createBody(bdef);
         this.body.createFixture(fdef).setUserData(this);
@@ -66,9 +66,12 @@ public class PlayerBody extends Sprite{
     }
 
     public void hitEnemy() {
-        this.body.setLinearVelocity(this.body.getLinearVelocity().x, this.body.getLinearVelocity().y*-1);
         nHealth--;
         System.out.println("healthlost, remaining health = " + nHealth);
+    }
+    public void hitDeath() {
+        nHealth=0;
+        System.out.println("hit death");
     }
     public void hitEnemyHead() {
         this.body.setLinearVelocity(this.body.getLinearVelocity().x, (3));
@@ -81,15 +84,21 @@ public class PlayerBody extends Sprite{
         nDouble = 0;
     }
     
+    public void Win() {
+    }
+    
     public World Death(World world){
         if(nHealth==0){
-            world.destroyBody(this.body);
+//            world.destroyBody(this.body);
             nHealth = -1;
             bDead = true;
         }
         if(this.body.getPosition().y < 0/Constants.PPM && nHealth != -1){
             System.out.println("death by floor");
             nHealth = 0; 
+        }
+        if(nHealth == -1){
+            
         }
         return world;
     }

@@ -7,20 +7,19 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import managers.GameStateManager;
 
-public class SplashState extends GameState {
+public class GameOverState extends GameState {
 
     float acc = 0f;
     Texture tex;
-    public static int nLives;
-    public SplashState(GameStateManager gsm) {
+
+    public GameOverState(GameStateManager gsm) {
         super(gsm);
-        tex = new Texture("GameScreen.png");
+        tex = new Texture("GameOver.jpg");
     }
 
     public void update(float delta) {
         if (Gdx.input.isButtonPressed(Input.Keys.ENTER)) {
-            nLives = 3;
-            gsm.setState(GameStateManager.State.PLAY);
+            gsm.setState(GameStateManager.State.SPLASH);
         }
     }
 
@@ -36,7 +35,7 @@ public class SplashState extends GameState {
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        batch.draw(tex, -180, -100, Gdx.graphics.getWidth()*.5f, Gdx.graphics.getHeight()*.5f);
+        batch.draw(tex, -350, -250, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
     }
 
