@@ -21,28 +21,32 @@ public class ContListener implements ContactListener{
         if(fa == null || fb == null) return;
         if(fa.getUserData() == null || fb.getUserData() == null) return;
         if(isContact(fa,fb)){
-//            System.out.println(fa.getUserData().toString());
+            //16 is the map bit, 32 is the death floor bit, 64 is win bit
             if((fa.getUserData().toString().contains("EnemyBody") && fb.getUserData().toString().contains("PlayerBody"))){
                 EnemyBody tba = (EnemyBody) fa.getUserData();
                 PlayerBody tbb = (PlayerBody) fb.getUserData();
                 tba.hit(fa, fb);
-//                tbb.hitEnemy();
             }
             if((fa.getUserData().toString().contains("16") && fb.getUserData().toString().contains("PlayerBody"))){
-                System.out.println(fa.getUserData().toString());
+//                System.out.println(fa.getUserData().toString());
                 PlayerBody tbb = (PlayerBody) fb.getUserData();
                 tbb.hitMap();
             }
             if((fa.getUserData().toString().contains("32") && fb.getUserData().toString().contains("PlayerBody"))){
-                System.out.println(fa.getUserData().toString());
+//                System.out.println(fa.getUserData().toString());
                 PlayerBody tbb = (PlayerBody) fb.getUserData();
                 tbb.hitDeath();
             }
-            if((fa.getUserData().toString().contains("64") && fb.getUserData().toString().contains("PlayerBody"))){
-                System.out.println(fa.getUserData().toString());
+            if((fa.getUserData().toString().contains("64") && !fa.getUserData().toString().contains("EnemyBody") && fb.getUserData().toString().contains("PlayerBody"))){
+//                System.out.println(fa.getUserData().toString());
+//                System.out.println(fb.getUserData().toString());
                 PlayerBody tbb = (PlayerBody) fb.getUserData();
-                tbb.hitMap();
                 tbb.Win();
+            }
+            if((fa.getUserData().toString().contains("32") && fb.getUserData().toString().contains("EnemyBody"))){
+//                System.out.println(fa.getUserData().toString());
+                EnemyBody tbb = (EnemyBody) fb.getUserData();
+                tbb.DeathHit();
             }
         }
     }

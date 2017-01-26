@@ -2,10 +2,7 @@ package managers;
 
 import newpackage.Box2DMain;
 import java.util.Stack;
-import states.GameOverState;
-import states.GameState;
-import states.PlayState;
-import states.SplashState;
+import states.*;
 
 public class GameStateManager {
     
@@ -17,7 +14,8 @@ public class GameStateManager {
     public enum State {
         SPLASH,
         PLAY,
-        OVER
+        OVER,
+        WIN
     }
     
     public GameStateManager(final Box2DMain app){
@@ -58,6 +56,7 @@ public class GameStateManager {
             case SPLASH: return new SplashState(this);
             case PLAY: return new PlayState(this);
             case OVER: return new GameOverState(this);
+            case WIN: return new WinState(this);
         }
         return null;
     }

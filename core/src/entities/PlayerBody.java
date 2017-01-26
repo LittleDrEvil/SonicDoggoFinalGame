@@ -27,11 +27,12 @@ public class PlayerBody extends Sprite{
 
     public Body body;
     public String id;
-    public int nWidth,nHeight, nJump, nDoubleJump, nDouble, nAirJump, nHealth = 3, nScore = 0;
-    public float nX, nY;
+    public int nWidth,nHeight, nJump, nDoubleJump, nDouble, nAirJump, nHealth = 1, nScore = 0;
+           
+    public float nX, nY, fSpeed = 0.8f;;
     public short MaskBit;
     public String sName = "Player";
-    public boolean bJump, bDone, bHit, bDead = false, bLeft = false;
+    public boolean bJump, bDone, bHit, bDead = false, bLeft = false, bWin = false;
 
     public PlayerBody(World world, String id, float x, float y, int nWidth, int nHeight, short MaskBit) {
         nX = x;
@@ -67,16 +68,16 @@ public class PlayerBody extends Sprite{
 
     public void hitEnemy() {
         nHealth--;
-        System.out.println("healthlost, remaining health = " + nHealth);
+//        System.out.println("healthlost, remaining health = " + nHealth);
     }
     public void hitDeath() {
         nHealth=0;
-        System.out.println("hit death");
+//        System.out.println("hit death");
     }
     public void hitEnemyHead() {
         this.body.setLinearVelocity(this.body.getLinearVelocity().x, (3));
-        nScore += 100;
-        System.out.println(nScore);
+        states.SplashState.nScore += 100;
+//        System.out.println(states.SplashState.nScore);
     }
 
     public void hitMap() {
@@ -85,6 +86,8 @@ public class PlayerBody extends Sprite{
     }
     
     public void Win() {
+//        System.out.println("winner");
+        bWin = true;
     }
     
     public World Death(World world){
@@ -94,7 +97,7 @@ public class PlayerBody extends Sprite{
             bDead = true;
         }
         if(this.body.getPosition().y < 0/Constants.PPM && nHealth != -1){
-            System.out.println("death by floor");
+//            System.out.println("death by floor");
             nHealth = 0; 
         }
         if(nHealth == -1){
@@ -108,12 +111,12 @@ public class PlayerBody extends Sprite{
             float fMovement = 0, x = 0, y = 0;
 
             if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-                fMovement-=0.8;
+                fMovement-=fSpeed;
                 bLeft = true;
             }
 
             if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-                fMovement+=0.8;
+                fMovement+=fSpeed;
                 bLeft = false;
             }
 
@@ -133,6 +136,9 @@ public class PlayerBody extends Sprite{
             if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
                 this.body.applyForceToCenter(0, 40, true);
             }
+            if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
+                fSpeed = 2;
+            } else fSpeed = 0.8f;
             if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
                 this.body.applyForceToCenter(0, -10, true);
             }

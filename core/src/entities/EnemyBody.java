@@ -93,6 +93,10 @@ public class EnemyBody {
             nHit = 2;
         }
     }
+    
+    public void DeathHit(){
+        nHit = 3;
+    }
 
     public World Action(World world, PlayerBody pbPlayer) {
         if (nHit == 1) {
@@ -103,6 +107,11 @@ public class EnemyBody {
             nHit = 0;
         } else if (nHit == 2) {
             pbPlayer.hitEnemy();
+            nHit = 0;
+        } else if (nHit == 3) {
+            world.destroyBody(body1);
+            world.destroyBody(body2);
+            bDead = true;
             nHit = 0;
         }
         return world;

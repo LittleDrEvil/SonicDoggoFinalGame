@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -16,8 +18,10 @@ import entities.BoxBody;
 import entities.EnemyBody;
 import entities.PlayerBody;
 import handlers.ContListener;
+import java.awt.Color;
 import managers.GameStateManager;
 import newpackage.Box2DMain;
+import static states.SplashState.lTime;
 import static utils.Constants.PPM;
 import utils.TiledObjectUtil;
 
@@ -28,7 +32,7 @@ public class PlayState extends GameState {
     private EnemyBody[] arebEnemies = new EnemyBody[7];
     private OrthogonalTiledMapRenderer tmr;
     private TiledMap map;
-    private float fSpeed = 0, fGravity = -0.1f;
+    private float fSpeed = 0, fGravity = -0.1f, fTime=System.currentTimeMillis();
     private Box2DDebugRenderer b2dr;
     private World world;
     private Boolean isLeft = false;
@@ -38,6 +42,8 @@ public class PlayState extends GameState {
     private boolean bDead;
     private FileHandle handle = Gdx.files.internal("spawnpoints.txt");
     private String strPos, arstrPoses[] = new String[14];
+    private BitmapFont font;
+    private long lstartTime;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
@@ -61,6 +67,12 @@ public class PlayState extends GameState {
         for (int i = 0; i < 7; i++) {
             arebEnemies[i] = new EnemyBody(world, arnX[i], arnY[i], 10, 10, false, 0f, utils.Constants.Bit_Enemy, 8);
         }
+        FileHandle fontFile = Gdx.files.internal("arial.ttf");
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 10;
+        FreeTypeFontGenerator gener = new FreeTypeFontGenerator(fontFile);
+        font = gener.generateFont(parameter);
+        gener.dispose();
         
         bbPlayer = new PlayerBody(world, "Player", 20, 450, 16, 20, utils.Constants.Bit_Player);
         texture = new Texture("Luigi.png");
@@ -71,6 +83,7 @@ public class PlayState extends GameState {
         TiledObjectUtil.parseTiledObjectLayer(world, map, "map");
         TiledObjectUtil.parseTiledObjectLayer(world, map, "death");
         TiledObjectUtil.parseTiledObjectLayer(world, map, "win");
+        
         resize(width, height);
     }
     
@@ -92,6 +105,10 @@ public class PlayState extends GameState {
         }
         if(states.SplashState.nLives <= 0){
             gsm.setState(GameStateManager.State.OVER);
+        }
+        if(bbPlayer.bWin){
+            System.out.println("Win");
+            gsm.setState(GameStateManager.State.WIN);
         }
     }
 
@@ -118,6 +135,10 @@ public class PlayState extends GameState {
             }
             world = arebEnemies[i].Action(world, bbPlayer);
         }
+        states.SplashState.lTime = (System.currentTimeMillis() - states.SplashState.lstartTime)/1000;
+        font.draw(batch, "Lives = " + states.SplashState.nLives, camera.position.x + 135, camera.position.y+110);
+        font.draw(batch, "Score = " + states.SplashState.nScore, camera.position.x - 175, camera.position.y+110);
+        font.draw(batch, "Time = " + states.SplashState.lTime, camera.position.x, camera.position.y+110);
         batch.end();
         
         b2dr.render(world, camera.combined.scl(PPM));
