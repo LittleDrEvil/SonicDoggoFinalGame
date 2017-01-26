@@ -141,7 +141,7 @@ public class PlayState extends GameState {
         font.draw(batch, "Time = " + states.SplashState.lTime, camera.position.x, camera.position.y+110);
         batch.end();
         
-        b2dr.render(world, camera.combined.scl(PPM));
+//        b2dr.render(world, camera.combined.scl(PPM));
         
     }
 
